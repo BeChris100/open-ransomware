@@ -7,5 +7,6 @@ yourself or on someone that you have full permission to do so.
 
 ***
 
-Full description will come out, when I'll get on the right track of this program. In the meantime,
-I will test it only on a VM (Virtual Machine) to not infect myself.
+You are currently looking at the master branch. To see the Java Branch, go to
+this following [branch](https://github.com/BeChris100/open-ransomware/tree/java),
+where Java will be based on Windows, macOS and Linux.
