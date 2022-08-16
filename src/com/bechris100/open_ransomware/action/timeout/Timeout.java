@@ -1,6 +1,6 @@
 package com.bechris100.open_ransomware.action.timeout;
 
-import com.bechris100.open_ransomware.RansomwareClass;
+import com.bechris100.open_ransomware.SoftwareEnvironment;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,36 +11,36 @@ public class Timeout {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (RansomwareClass.timeoutMilliseconds == 0 &&
-                        RansomwareClass.timeoutSeconds == 0 &&
-                        RansomwareClass.timeoutMinutes == 0 &&
-                        RansomwareClass.timeoutHours == 0 &&
-                        RansomwareClass.timeoutDays == 0) {
+                if (SoftwareEnvironment.Timeout.timeoutMilliseconds == 0 &&
+                        SoftwareEnvironment.Timeout.timeoutSeconds == 0 &&
+                        SoftwareEnvironment.Timeout.timeoutMinutes == 0 &&
+                        SoftwareEnvironment.Timeout.timeoutHours == 0 &&
+                        SoftwareEnvironment.Timeout.timeoutDays == 0) {
                     TimeoutAction.takeAction();
                     this.cancel();
                 } else {
-                    if (RansomwareClass.timeoutDays >= 1 && RansomwareClass.timeoutHours == 0) {
-                        RansomwareClass.timeoutHours = 23;
-                        RansomwareClass.timeoutDays--;
-                    } else if (RansomwareClass.timeoutHours >= 1 && RansomwareClass.timeoutMinutes == 0) {
-                        RansomwareClass.timeoutMinutes = 60;
-                        RansomwareClass.timeoutHours--;
-                    } else if (RansomwareClass.timeoutMinutes >= 1 && RansomwareClass.timeoutSeconds == 0) {
-                        RansomwareClass.timeoutSeconds = 59;
-                        RansomwareClass.timeoutMinutes--;
-                    } else if (RansomwareClass.timeoutSeconds >= 1 && RansomwareClass.timeoutMilliseconds == 0) {
-                        RansomwareClass.timeoutMilliseconds = 1000;
-                        RansomwareClass.timeoutSeconds--;
+                    if (SoftwareEnvironment.Timeout.timeoutDays >= 1 && SoftwareEnvironment.Timeout.timeoutHours == 0) {
+                        SoftwareEnvironment.Timeout.timeoutHours = 23;
+                        SoftwareEnvironment.Timeout.timeoutDays--;
+                    } else if (SoftwareEnvironment.Timeout.timeoutHours >= 1 && SoftwareEnvironment.Timeout.timeoutMinutes == 0) {
+                        SoftwareEnvironment.Timeout.timeoutMinutes = 60;
+                        SoftwareEnvironment.Timeout.timeoutHours--;
+                    } else if (SoftwareEnvironment.Timeout.timeoutMinutes >= 1 && SoftwareEnvironment.Timeout.timeoutSeconds == 0) {
+                        SoftwareEnvironment.Timeout.timeoutSeconds = 59;
+                        SoftwareEnvironment.Timeout.timeoutMinutes--;
+                    } else if (SoftwareEnvironment.Timeout.timeoutSeconds >= 1 && SoftwareEnvironment.Timeout.timeoutMilliseconds == 0) {
+                        SoftwareEnvironment.Timeout.timeoutMilliseconds = 1000;
+                        SoftwareEnvironment.Timeout.timeoutSeconds--;
                     } else
-                        RansomwareClass.timeoutMilliseconds--;
+                        SoftwareEnvironment.Timeout.timeoutMilliseconds--;
                 }
 
                 if (tInterface != null)
-                    tInterface.timeout(RansomwareClass.timeoutMilliseconds,
-                            RansomwareClass.timeoutSeconds,
-                            RansomwareClass.timeoutMinutes,
-                            RansomwareClass.timeoutHours,
-                            RansomwareClass.timeoutDays);
+                    tInterface.timeout(SoftwareEnvironment.Timeout.timeoutMilliseconds,
+                            SoftwareEnvironment.Timeout.timeoutSeconds,
+                            SoftwareEnvironment.Timeout.timeoutMinutes,
+                            SoftwareEnvironment.Timeout.timeoutHours,
+                            SoftwareEnvironment.Timeout.timeoutDays);
             }
         }, 1, 1);
     }

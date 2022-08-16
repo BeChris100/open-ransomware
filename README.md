@@ -16,4 +16,4 @@ The following code will be only tested on those Linux Operating Systems:
 - Arch Linux
 - Zorin OS 16.1
 
-They won't be tested on a real hardware, but rather the Virtual Machines via QEMU.
+This will not be tested on a real hardware, but rather the Virtual Machines via QEMU and VirtualBox.

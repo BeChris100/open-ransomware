@@ -44,6 +44,10 @@ public class ConfigParser {
             if (line.startsWith("#"))
                 continue;
 
+            // FIXME: 8/16/22 Thrown an error if some lines are empty, which in case of "inject.cfg",
+            if (line.isEmpty())
+                continue;
+
             String[] opts;
 
             if (line.startsWith(" ") || line.startsWith("\t")) {
