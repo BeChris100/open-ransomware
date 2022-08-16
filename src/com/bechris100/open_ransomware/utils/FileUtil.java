@@ -1,5 +1,7 @@
 package com.bechris100.open_ransomware.utils;
 
+import com.bechris100.open_ransomware.config.ConfigParser;
+
 import java.io.*;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;

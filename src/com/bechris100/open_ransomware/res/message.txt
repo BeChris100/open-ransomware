@@ -1,4 +1,4 @@
 This is a message based on the Project made by BeChris 100.
 It is meant for educational purposes only.
 If you have been infected, and you did not know about this infection, go to this webpage for a tutorial of removing this Ransomware:
-[ WIKI_WEBPAGE ]
+https://github.com/BeChris100/open-ransomware/wiki/Removal-of-the-Ransomware-Tool
