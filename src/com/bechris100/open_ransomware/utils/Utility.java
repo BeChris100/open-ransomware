@@ -13,6 +13,10 @@ public class Utility {
         return new Random().nextInt(max - min + 1) + min;
     }
 
+    public static String removePath(String fullPath) {
+        return fullPath.substring(Utility.getLastPathSeparator(fullPath, false));
+    }
+
     public static String formatString(String input) {
         String formatted = input;
 
