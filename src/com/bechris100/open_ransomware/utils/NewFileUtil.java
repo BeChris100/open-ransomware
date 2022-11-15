@@ -593,4 +593,91 @@ public class NewFileUtil {
         }
     }
 
+    public boolean userWrite() throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        return data.canWrite();
+    }
+
+    public boolean userRead() throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        return data.canRead();
+    }
+
+    public boolean userExec() throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        return data.canExecute();
+    }
+
+    public void setUserWrite(boolean write) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setWritable(write))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to write");
+    }
+
+    public void setUserRead(boolean read) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setReadable(read))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to read");
+    }
+
+    public void serUserExec(boolean exec) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setExecutable(exec))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to exec");
+    }
+
+    public void setUserWrite(boolean write, boolean onlyOwner) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setWritable(write, onlyOwner))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to write for only the file owner");
+    }
+
+    public void setUserRead(boolean read, boolean onlyOwner) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setReadable(read, onlyOwner))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to read for only the file owner");
+    }
+
+    public void serUserExec(boolean exec, boolean onlyOwner) throws IOException {
+        File data = new File(path);
+
+        if (!data.exists())
+            throw new FileNotFoundException("File at \"" + path + "\" not found");
+
+        if (!data.setExecutable(exec, onlyOwner))
+            throw new IOException("Could not set file attribute at \"" + path + "\" to exec for only the file owner");
+    }
+
 }
